@@ -1,0 +1,8 @@
+app: blender
+
+module: debian
+version: stable
+mirror: http://ftp.am.debian.org/debian
+repositories:
+  - main
+  - contrib

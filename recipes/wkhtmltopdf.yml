@@ -1,0 +1,11 @@
+app: wkhtmltopdf
+
+module: debian
+version: stable
+mirror: http://ftp.am.debian.org/debian
+repositories:
+  - main
+  - contrib
+ 
+include:
+  - libqt5webkit5

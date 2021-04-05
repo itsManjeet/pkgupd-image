@@ -1,0 +1,41 @@
+app: code
+version: 1.54.2
+
+about: >
+  The Open Source build of Visual Studio Code (vscode) editor
+
+module: archlinux
+include:
+  - electron
+  - icu
+  - libevent
+  - opus
+  - re2
+  - snappy
+
+
+archlinux:
+  mirror: https://mirrors.edge.kernel.org/archlinux/
+
+  repositories:
+    - core
+    - community
+    - extra
+
+
+script:
+  - cp usr/share/pixmaps/com.visualstudio.code.oss.png code.png
+
+desktop: |
+  [Desktop Entry]
+  Name=Visual Studio Code OSS
+  Comment=Code Editing. Redefined.
+  GenericName=Text Editor
+  Exec=code-oss --no-sandbox --unity-launch %F
+  Icon=code
+  Type=Application
+  StartupNotify=false
+  StartupWMClass=Code
+  Categories=Utility;TextEditor;Development;IDE;
+  MimeType=text/plain;application/x-code-oss-workspace;
+  Keywords=vscode;
