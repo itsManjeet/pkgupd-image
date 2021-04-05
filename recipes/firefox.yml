@@ -1,0 +1,29 @@
+app: firefox
+desc: Firefox Browser, also known as Mozilla Firefox or simply Firefox, is a free and open-source web browser developed by the Mozilla Foundation and its subsidiary, the Mozilla Corporation
+patch: false
+url: http://ftp.mozilla.org/pub/firefox/releases/87.0/linux-x86_64/en-US/firefox-87.0.tar.bz2
+
+script:
+  - mkdir -p usr/bin/
+  - cp -r firefox/* usr/bin
+  - cp firefox/browser/chrome/icons/default/default128.png firefox.png
+  - rm firefox -r
+  - rm usr/bin/browser/features/{firefox@getpocket.com,onboarding@mozilla.org,activity-stream@mozilla.org,aushelper@mozilla.org,followonsearch@mozilla.com,formautofill@mozilla.org}.xpi &>/dev/null || true
+
+
+desktop: |
+  [Desktop Entry]
+  Type=Application
+  Name=Firefox
+  Icon=firefox
+  Exec=firefox %u
+  Categories=GNOME;GTK;Network;WebBrowser;
+  MimeType=text/html;text/xml;application/xhtml+xml;application/xml;application/rss+xml;application/rdf+xml;image/gif;image/jpeg;image/png;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;x-scheme-handler/chrome;video/webm;application/x-xpinstall;
+  StartupNotify=true
+
+appRun: |
+  #!/bin/bash
+  HERE=$(dirname $(readlink -f ${0}))
+  export SNAP_NAME=firefox
+  export MOZ_LEGACY_PROFILES=1
+  $HERE/usr/bin/firefox $@
