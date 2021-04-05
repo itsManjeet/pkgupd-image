@@ -99,7 +99,8 @@ func (f *Factory) Build() (err error) {
 	if _, err := os.Stat(f.wrkdir + "/" + appID + ".png"); os.IsNotExist(err) {
 		utils.Copyfile(icofile, f.wrkdir+"/"+appID+".png")
 	}
-
+	
+	utils.Copyfile(f.wrkdir + "/" + appID + ".png", f.pkgdir + "/.icons/" + appID + ".png")
 	desktopfile := f.wrkdir + "/share/applications/" + appID + ".desktop"
 	if _, err := os.Stat(desktopfile); err == nil {
 		utils.Copyfile(desktopfile, f.wrkdir+"/"+appID+".desktop")
