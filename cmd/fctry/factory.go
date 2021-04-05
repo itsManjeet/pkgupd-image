@@ -89,6 +89,7 @@ func (f *Factory) Build() (err error) {
 	}
 
 	if f.config.Patch {
+		fmt.Println("=> Patching image")
 		if err := utils.Patch(f.wrkdir); err != nil {
 			return err
 		}
@@ -111,11 +112,12 @@ func (f *Factory) Build() (err error) {
 	if err := utils.WriteAppRun(f.config.AppRun, appID, f.wrkdir); err != nil {
 		return err
 	}
-
-	if _, err := os.Stat("assets/files.list"); err == nil {
-		if data, err := ioutil.ReadFile("assets/files.list"); err == nil {
-			fileslist := strings.Split(string(data), "\n")
-			utils.Clean(f.wrkdir, fileslist)
+	if f.config.Patch {
+		if _, err := os.Stat("assets/files.list"); err == nil {
+			if data, err := ioutil.ReadFile("assets/files.list"); err == nil {
+				fileslist := strings.Split(string(data), "\n")
+				utils.Clean(f.wrkdir, fileslist)
+			}
 		}
 	}
 
@@ -157,5 +159,7 @@ func (f Factory) pre() error {
 
 func (f Factory) clean() {
 	log.Println("clearing", f.wrkdir)
-	os.RemoveAll(f.wrkdir)
+	if os.Getenv("NO_CLEAN") != "1" {
+		os.RemoveAll(f.wrkdir)
+	}
 }
