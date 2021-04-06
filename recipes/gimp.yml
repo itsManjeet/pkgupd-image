@@ -1,0 +1,10 @@
+app: gimp
+desc: 
+version: unstable
+
+module: debian
+repositories:
+  - main
+  - contrib
+
+url: http://ftp.us.debian.org/debian
