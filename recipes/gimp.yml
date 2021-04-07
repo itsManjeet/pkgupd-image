@@ -1,10 +1,15 @@
 app: gimp
-desc: 
+desc: a free and open-source raster graphics editor used for image manipulation and image editing, free-form drawing, transcoding between different image file formats, and more specialized tasks.
 version: unstable
 
 module: debian
 repositories:
   - main
   - contrib
+include:
+  - libpcre3
 
 url: http://ftp.us.debian.org/debian
+
+script:
+  - cp usr/share/icons/hicolor/256x256/apps/gimp.png .
