@@ -1,6 +1,7 @@
 package main
 
 import (
+	"appfctry/internal/archlinux"
 	"appfctry/internal/config"
 	"appfctry/internal/debian"
 	"appfctry/internal/module"
@@ -99,8 +100,8 @@ func (f *Factory) Build() (err error) {
 	if _, err := os.Stat(f.wrkdir + "/" + appID + ".png"); os.IsNotExist(err) {
 		utils.Copyfile(icofile, f.wrkdir+"/"+appID+".png")
 	}
-	
-	utils.Copyfile(f.wrkdir + "/" + appID + ".png", f.pkgdir + "/.icons/" + appID + ".png")
+
+	utils.Copyfile(f.wrkdir+"/"+appID+".png", f.pkgdir+"/.icons/"+appID+".png")
 	desktopfile := f.wrkdir + "/share/applications/" + appID + ".desktop"
 	if _, err := os.Stat(desktopfile); err == nil {
 		utils.Copyfile(desktopfile, f.wrkdir+"/"+appID+".desktop")
@@ -135,6 +136,8 @@ func (f Factory) getModule(module string) (module.Module, error) {
 	switch module {
 	case "debian":
 		return &debian.Debian{}, nil
+	case "archlinux":
+		return &archlinux.ArchLinux{}, nil
 	}
 	if len(module) == 0 {
 		return nil, nil
