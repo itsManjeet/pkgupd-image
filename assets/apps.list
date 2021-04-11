@@ -51,3 +51,5 @@ passwd
 udev
 uuid-runtime
 default-dbus-session-bus
+gcc-libs
+glibc
