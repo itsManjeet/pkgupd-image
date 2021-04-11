@@ -101,7 +101,7 @@ func (d *Debian) Install(file, dir string) error {
 		return err
 	}
 
-	for _, cache := range []string{"data.tar.xz", "control.tar.xz", "debian-binary"} {
+	for _, cache := range []string{"data.tar.xz", "control.tar.xz", "debian-binary", "control.tar.gz", "data.tar.gz"} {
 		os.RemoveAll(dir + "/" + cache)
 	}
 	return nil
