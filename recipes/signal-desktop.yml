@@ -1,0 +1,9 @@
+app: signal-desktop
+desc: Signal Private Messanger for linux
+module: archlinux
+repositories:
+  - core
+  - extra
+  - community
+
+url: http://mirrors.edge.kernel.org/archlinux
