@@ -17,6 +17,7 @@ type Package struct {
 	Version     string
 	Description string
 	Depends     []string
+	Provides    []string
 }
 
 type Module interface {
@@ -45,6 +46,16 @@ func (exec Executor) GetApp(appID string) (Package, error) {
 		return app, nil
 	}
 
+	for _, app := range exec.database {
+		for _, a := range app.Provides {
+			if appID == a {
+				return app, nil
+			}
+		}
+	}
+
+	fmt.Println("Error! " + appID + " not found in repo")
+	os.Exit(1)
 	return Package{}, nil
 }
 
