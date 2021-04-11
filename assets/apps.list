@@ -53,3 +53,10 @@ uuid-runtime
 default-dbus-session-bus
 gcc-libs
 glibc
+xz
+lz4
+zstd
+libx11
+xorgproto
+libxcb
+cairo
