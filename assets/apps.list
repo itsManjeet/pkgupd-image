@@ -367,6 +367,8 @@ libxv
 libxvmc
 libxxf86dga
 libxxf86vm
+libp11-kit
+systemd-libs
 libyaml
 linux
 linux-pam
