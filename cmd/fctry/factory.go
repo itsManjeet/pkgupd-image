@@ -108,7 +108,7 @@ func (f *Factory) Build() (err error) {
 		}
 	}
 
-	icofile := "assets/appimage.png"
+	icofile := "assets/package.png"
 	if _, err := os.Stat(f.wrkdir + "/" + appID + ".png"); os.IsNotExist(err) {
 		utils.Copyfile(icofile, f.wrkdir+"/"+appID+".png")
 	}
