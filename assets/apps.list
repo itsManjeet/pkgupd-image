@@ -60,3 +60,6 @@ libx11
 xorgproto
 libxcb
 cairo
+gtk3
+hicolor-icon-theme
+ncurses

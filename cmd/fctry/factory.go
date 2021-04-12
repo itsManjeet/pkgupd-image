@@ -23,6 +23,15 @@ type Factory struct {
 	srcdir, pkgdir, wrkdir, syncdir string
 }
 
+func contains(list []string, data string) bool {
+	for _, a := range list {
+		if a == data {
+			return true
+		}
+	}
+	return false
+}
+
 func (f *Factory) Build() (err error) {
 
 	f.srcdir = f.basedir + "/src/"
@@ -79,6 +88,9 @@ func (f *Factory) Build() (err error) {
 		}
 
 		for _, dep := range exec.Depends(appID) {
+			if contains(f.config.Skip, dep.Name) {
+				continue
+			}
 			if err := exec.Install(dep.Name, f.srcdir, f.wrkdir); err != nil {
 				return err
 			}
