@@ -29,7 +29,7 @@ func main() {
 	for _, file := range dirData {
 		recipe, err := config.Load(path.Join(recipeDir, file.Name()))
 		if err != nil {
-			log.Panicln("Panic!", err)
+			log.Panicln("Panic!", file.Name(), err)
 		}
 
 		recipeData = append(recipeData, *recipe)

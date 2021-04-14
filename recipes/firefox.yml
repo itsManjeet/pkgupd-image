@@ -5,13 +5,14 @@ app:
 
 patch: false
 exec:
-  sources: http://ftp.mozilla.org/pub/firefox/releases/87.0/linux-x86_64/en-US/firefox-87.0.tar.bz2
+  sources:
+    - http://ftp.mozilla.org/pub/firefox/releases/87.0/linux-x86_64/en-US/firefox-87.0.tar.bz2
   script:
-    - mkdir -p usr/bin/
-    - cp -r firefox/* usr/bin
-    - cp firefox/browser/chrome/icons/default/default128.png firefox.png
-    - rm firefox -r
-    - rm usr/bin/browser/features/{firefox@getpocket.com,onboarding@mozilla.org,activity-stream@mozilla.org,aushelper@mozilla.org,followonsearch@mozilla.com,formautofill@mozilla.org}.xpi &>/dev/null || true
+    mkdir -p usr/bin/
+    cp -r firefox/* usr/bin
+    cp firefox/browser/chrome/icons/default/default128.png firefox.png
+    rm firefox -r
+    rm usr/bin/browser/features/{firefox@getpocket.com,onboarding@mozilla.org,activity-stream@mozilla.org,aushelper@mozilla.org,followonsearch@mozilla.com,formautofill@mozilla.org}.xpi &>/dev/null || true
 
 
 desktop: |
