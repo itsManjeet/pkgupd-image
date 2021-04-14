@@ -5,6 +5,7 @@ import (
 	"appfctry/internal/config"
 	"appfctry/internal/debian"
 	"appfctry/internal/module"
+	"appfctry/internal/ubuntu"
 	"appfctry/internal/utils"
 	"errors"
 	"fmt"
@@ -43,10 +44,12 @@ func (f *Factory) Build() (err error) {
 		return err
 	}
 
-	f.wrkdir = f.basedir + "/wrk/" + f.config.App
+	f.syncdir += f.config.Distro.ID + "/"
+
+	f.wrkdir = f.basedir + "/wrk/" + f.config.App.ID
 	f.clean()
 
-	mod, err := f.getModule(f.config.Module)
+	mod, err := f.getModule(f.config.Distro.ID)
 	if err != nil {
 		return err
 	}
@@ -55,17 +58,19 @@ func (f *Factory) Build() (err error) {
 		return err
 	}
 
-	appID := f.config.App
+	appID := f.config.App.ID
 
 	if mod == nil {
 		log.Println("Using basic script")
-		_, file := path.Split(f.config.URL)
-		if err := utils.DownloadFile(f.srcdir+"/"+file, f.config.URL); err != nil {
-			return err
-		}
+		for _, source := range f.config.Execute.Sources {
+			_, file := path.Split(source)
+			if err := utils.DownloadFile(f.srcdir+"/"+file, source); err != nil {
+				return err
+			}
 
-		if err := utils.Extractfile(f.srcdir+"/"+file, f.wrkdir); err != nil {
-			return err
+			if err := utils.Extractfile(f.srcdir+"/"+file, f.wrkdir); err != nil {
+				return err
+			}
 		}
 
 	} else {
@@ -75,7 +80,7 @@ func (f *Factory) Build() (err error) {
 		if _, err := os.Stat("assets/apps.list"); err == nil {
 			if data, err := ioutil.ReadFile("assets/apps.list"); err == nil {
 				appslist := strings.Split(string(data), "\n")
-				f.config.Skip = append(f.config.Skip, appslist...)
+				f.config.Distro.Skips = append(f.config.Distro.Skips, appslist...)
 			}
 		}
 
@@ -88,7 +93,7 @@ func (f *Factory) Build() (err error) {
 		}
 
 		for _, dep := range exec.Depends(appID) {
-			if contains(f.config.Skip, dep.Name) {
+			if contains(f.config.Distro.Skips, dep.Name) {
 				continue
 			}
 			if err := exec.Install(dep.Name, f.srcdir, f.wrkdir); err != nil {
@@ -97,7 +102,7 @@ func (f *Factory) Build() (err error) {
 		}
 	}
 
-	if err := utils.Executor(f.config.Script, f.wrkdir, f.config.Environment); err != nil {
+	if err := utils.Executor(f.config.Execute.Script, f.wrkdir, f.config.Execute.Environment); err != nil {
 		return err
 	}
 
@@ -113,6 +118,10 @@ func (f *Factory) Build() (err error) {
 		utils.Copyfile(icofile, f.wrkdir+"/"+appID+".png")
 	}
 
+	if err := utils.Copyfile("assets/libunionpreload.so", f.wrkdir+"/libunionpreload.so"); err != nil {
+		return err
+	}
+
 	utils.Copyfile(f.wrkdir+"/"+appID+".png", f.pkgdir+"/.icons/"+appID+".png")
 	desktopfile := f.wrkdir + "/share/applications/" + appID + ".desktop"
 	if _, err := os.Stat(desktopfile); err == nil {
@@ -126,12 +135,11 @@ func (f *Factory) Build() (err error) {
 	if err := utils.WriteAppRun(f.config.AppRun, appID, f.wrkdir); err != nil {
 		return err
 	}
-	if f.config.Patch {
-		if _, err := os.Stat("assets/files.list"); err == nil {
-			if data, err := ioutil.ReadFile("assets/files.list"); err == nil {
-				fileslist := strings.Split(string(data), "\n")
-				utils.Clean(f.wrkdir, fileslist)
-			}
+
+	if _, err := os.Stat("assets/files.list"); err == nil {
+		if data, err := ioutil.ReadFile("assets/files.list"); err == nil {
+			fileslist := strings.Split(string(data), "\n")
+			utils.Clean(f.wrkdir, fileslist)
 		}
 	}
 
@@ -148,6 +156,8 @@ func (f Factory) getModule(module string) (module.Module, error) {
 	switch module {
 	case "debian":
 		return &debian.Debian{}, nil
+	case "ubuntu":
+		return &ubuntu.Ubuntu{}, nil
 	case "archlinux":
 		return &archlinux.ArchLinux{}, nil
 	}

@@ -1,15 +1,22 @@
-app: gimp
-desc: a free and open-source raster graphics editor used for image manipulation and image editing, free-form drawing, transcoding between different image file formats, and more specialized tasks.
-version: unstable
-patch: true
-module: debian
-repositories:
-  - main
-  - contrib
-include:
-  - libpcre3
+app:
+  id: gimp
+  version: 0.1.1
+  desc: a free and open-source raster graphics editor used for image manipulation and image editing, free-form drawing, transcoding between different image file formats, and more specialized tasks.
 
-url: http://ftp.us.debian.org/debian
+distro:
+  id: ubuntu
+  version: trusty
+  mirror: http://archive.ubuntu.com/ubuntu
+  repo:
+    - main
+    - universe
 
-script:
-  - cp usr/share/icons/hicolor/256x256/apps/gimp.png .
+exec:
+  script: |
+    mv ./usr/lib/libblas/* usr/lib/x86_64-linux-gnu/
+    mv ./usr/lib/lapack/* ./usr/lib/x86_64-linux-gnu/
+    rm usr/lib/gimp/2.0/plug-ins/pagecurl
+    sed -i -e 's|Packaged by Otto Meier|       AppImage       |g' ./usr/bin/gimp-*
+    sed -i -e 's|././/||g' usr/lib/gimp/2.0/interpreters/pygimp.interp
+    sed -i -e 's|^Name=.*|Name=GIMP|g' usr/share/applications/gimp.desktop
+    cp usr/share/icons/hicolor/256x256/apps/gimp.png .

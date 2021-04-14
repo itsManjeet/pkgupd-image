@@ -7,19 +7,28 @@ import (
 )
 
 type Config struct {
-	App string `yaml:"app"`
+	App struct {
+		ID      string `yaml:"id"`
+		Version string `yaml:"version"`
+		About   string `yaml:"desc"`
+	} `yaml:"app"`
 
-	Module  string `yaml:"module"`
-	Version string `yaml:"version"`
+	Union  bool `yaml:"union"`
+	Patch  bool `yaml:"patch"`
+	Distro struct {
+		ID           string   `yaml:"id"`
+		Version      string   `yaml:"version"`
+		Mirror       string   `yaml:"mirror"`
+		Repositories []string `yaml:"repo"`
+		Skips        []string `yaml:"skips"`
+		Includes     []string `yaml:"includes"`
+	} `yaml:"distro"`
 
-	Patch bool `yaml:"patch"`
-
-	URL          string   `yaml:"url"`
-	Repositories []string `yaml:"repositories"`
-	Script       []string `yaml:"script"`
-	Environment  []string `yaml:"environment"`
-	Include      []string `yaml:"include"`
-	Skip         []string `yaml:"skip"`
+	Execute struct {
+		Sources     []string `yaml:"sources"`
+		Script      string   `yaml:"script"`
+		Environment []string `yaml:"environ"`
+	} `yaml:"exec"`
 
 	AppRun  string `yaml:"appRun"`
 	Desktop string `yaml:"desktop"`

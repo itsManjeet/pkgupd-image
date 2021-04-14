@@ -109,21 +109,21 @@ func (exec *Executor) mergedb(db map[string]Package) {
 func (exec *Executor) Sync(wdir string) error {
 	fmt.Println(":: Syncing database ::")
 	exec.database = make(map[string]Package)
-	exec.alreadydone = exec.config.Skip
+	exec.alreadydone = exec.config.Distro.Skips
 	exec.applist = make([]Package, 0)
 
 	if _, err := os.Stat("assets/apps.list"); err == nil {
 		if data, err := ioutil.ReadFile("assets/apps.list"); err == nil {
 			appslist := strings.Split(string(data), "\n")
 			log.Println("added", len(appslist), "to skip list")
-			exec.config.Skip = append(exec.config.Skip, appslist...)
+			exec.config.Distro.Skips = append(exec.config.Distro.Skips, appslist...)
 		}
 	}
 
-	for _, repo := range exec.config.Repositories {
+	for _, repo := range exec.config.Distro.Repositories {
 		log.Println("syncing ", repo)
 
-		url := exec.module.GetURL(exec.config.URL, exec.config.Version, repo)
+		url := exec.module.GetURL(exec.config.Distro.Mirror, exec.config.Distro.Version, repo)
 		filepath := wdir + "/" + repo
 
 		if err := utils.DownloadFile(filepath, url); err != nil {
@@ -149,7 +149,7 @@ func (exec *Executor) Depends(appID string) []Package {
 
 	exec.caldep(app)
 
-	for _, d := range exec.config.Include {
+	for _, d := range exec.config.Distro.Includes {
 		apd, err := exec.GetApp(d)
 		if err != nil {
 			fmt.Println(d, "not found in db")
@@ -176,7 +176,7 @@ func (exec *Executor) Install(appID string, srcdir, wrkdir string) error {
 	_, file := path.Split(app.URL)
 	filepath := srcdir + "/" + file
 
-	if err := utils.DownloadFile(filepath, exec.config.URL+"/"+app.URL); err != nil {
+	if err := utils.DownloadFile(filepath, exec.config.Distro.Mirror+"/"+app.URL); err != nil {
 		return err
 	}
 
