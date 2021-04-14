@@ -123,9 +123,15 @@ func (f *Factory) Build() (err error) {
 	}
 
 	utils.Copyfile(f.wrkdir+"/"+appID+".png", f.pkgdir+"/.icons/"+appID+".png")
-	desktopfile := f.wrkdir + "/share/applications/" + appID + ".desktop"
-	if _, err := os.Stat(desktopfile); err == nil {
-		utils.Copyfile(desktopfile, f.wrkdir+"/"+appID+".desktop")
+	if len(f.config.Desktop) == 0 {
+		desktopfile := f.wrkdir + "/usr/share/applications/" + appID + ".desktop"
+		if _, err := os.Stat(desktopfile); err == nil {
+			utils.Copyfile(desktopfile, f.wrkdir+"/"+appID+".desktop")
+		} else {
+			if err := utils.WriteDesktop(f.config.Desktop, appID, f.wrkdir); err != nil {
+				return err
+			}
+		}
 	} else {
 		if err := utils.WriteDesktop(f.config.Desktop, appID, f.wrkdir); err != nil {
 			return err

@@ -1,0 +1,33 @@
+app:
+  id: inkscape
+  version: 0.1.1
+  desc: a free and open-source raster graphics editor used for image manipulation and image editing, free-form drawing, transcoding between different image file formats, and more specialized tasks.
+
+distro:
+  id: ubuntu
+  version: trusty
+  mirror: http://archive.ubuntu.com/ubuntu
+  repo:
+    - main
+    - universe
+
+exec:
+  script: |
+    cp usr/share/icons/hicolor/256x256/apps/inkscape.png .
+
+desktop: |
+  [Desktop Entry]
+  Version=1.0
+  Name=Inkscape
+  GenericName=Vector Graphics Editor
+  X-GNOME-FullName=Inkscape Vector Graphics Editor
+  Comment=Create and edit Scalable Vector Graphics images
+  Type=Application
+  Categories=Graphics;VectorGraphics;GTK;
+  MimeType=image/svg+xml;image/svg+xml-compressed;application/vnd.corel-draw;image/x-eps;application/illustrator;
+  Exec=inkscape %F
+  TryExec=inkscape
+  Terminal=false
+  StartupNotify=true
+  Icon=inkscape
+  X-Ubuntu-Gettext-Domain=inkscape
