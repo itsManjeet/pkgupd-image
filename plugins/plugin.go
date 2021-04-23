@@ -1,8 +1,6 @@
-package module
+package plugin
 
 import (
-	"appfctry/internal/config"
-	"appfctry/internal/utils"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -10,6 +8,9 @@ import (
 	"os"
 	"path"
 	"strings"
+
+	"github.com/itsManjeet/app-fctry/config"
+	"github.com/itsManjeet/app-fctry/utils"
 )
 
 type Package struct {
@@ -20,24 +21,24 @@ type Package struct {
 	Provides    []string
 }
 
-type Module interface {
+type Plugin interface {
 	GetURL(string, string, string) string
 	Prepare(string) (map[string]Package, error)
 	Install(string, string) error
 }
 
 type Executor struct {
-	module      Module
+	plugin      Plugin
 	config      *config.Config
 	database    map[string]Package
 	applist     []Package
 	alreadydone []string
 }
 
-func Initialize(c *config.Config, m Module) *Executor {
+func Initialize(c *config.Config, m Plugin) *Executor {
 	return &Executor{
 		config: c,
-		module: m,
+		plugin: m,
 	}
 }
 
@@ -123,13 +124,13 @@ func (exec *Executor) Sync(wdir string) error {
 	for _, repo := range exec.config.Distro.Repositories {
 		log.Println("syncing ", repo)
 
-		url := exec.module.GetURL(exec.config.Distro.Mirror, exec.config.Distro.Version, repo)
+		url := exec.plugin.GetURL(exec.config.Distro.Mirror, exec.config.Distro.Version, repo)
 		filepath := wdir + "/" + repo
 
 		if err := utils.DownloadFile(filepath, url); err != nil {
 			return err
 		}
-		db, err := exec.module.Prepare(filepath)
+		db, err := exec.plugin.Prepare(filepath)
 		if err != nil {
 			return err
 		}
@@ -180,7 +181,7 @@ func (exec *Executor) Install(appID string, srcdir, wrkdir string) error {
 		return err
 	}
 
-	if err := exec.module.Install(filepath, wrkdir); err != nil {
+	if err := exec.plugin.Install(filepath, wrkdir); err != nil {
 		return err
 	}
 

@@ -1,6 +1,6 @@
 app:
   id: firefox
-  version: stable
+  version: 87.0
   desc: Firefox Browser, also known as Mozilla Firefox or simply Firefox, is a free and open-source web browser developed by the Mozilla Foundation and its subsidiary, the Mozilla Corporation
 
 patch: false

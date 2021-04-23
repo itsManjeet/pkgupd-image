@@ -1,29 +1,30 @@
-package debian
+package ubuntu
 
 import (
-	"appfctry/internal/module"
-	"appfctry/internal/utils"
 	"fmt"
 	"os"
 	"os/exec"
 	"strings"
+
+	plugin "github.com/itsManjeet/app-fctry/plugins"
+	"github.com/itsManjeet/app-fctry/utils"
 )
 
-type Debian struct {
+type Ubuntu struct {
 }
 
-func (d *Debian) GetURL(mirr, repo, version string) string {
+func (d *Ubuntu) GetURL(mirr, repo, version string) string {
 	return fmt.Sprintf("%s/dists/%s/%s/binary-amd64/Packages.gz", mirr, repo, version)
 }
 
-func (d *Debian) Prepare(path string) (map[string]module.Package, error) {
+func (d *Ubuntu) Prepare(path string) (map[string]plugin.Package, error) {
 
 	output, err := d.readfile(path)
 	if err != nil {
 		return nil, err
 	}
 
-	db := make(map[string]module.Package)
+	db := make(map[string]plugin.Package)
 
 	lines := strings.Split(output, "\n")
 	i := 0
@@ -49,7 +50,7 @@ func (d *Debian) Prepare(path string) (map[string]module.Package, error) {
 	}
 
 	for i <= len(lines) {
-		var pkg module.Package
+		var pkg plugin.Package
 		pkg.Depends = make([]string, 0)
 
 		for {
@@ -83,7 +84,7 @@ func (d *Debian) Prepare(path string) (map[string]module.Package, error) {
 	return db, nil
 }
 
-func (d *Debian) readfile(path string) (string, error) {
+func (d *Ubuntu) readfile(path string) (string, error) {
 	data, err := exec.Command("gzip", "--stdout", "--decompress", path).Output()
 	if err != nil {
 		return "", err
@@ -92,14 +93,16 @@ func (d *Debian) readfile(path string) (string, error) {
 	return string(data), nil
 }
 
-func (d *Debian) Install(file, dir string) error {
+func (d *Ubuntu) Install(file, dir string) error {
 	fmt.Println(":: Extracting", file, "::")
 	if err := utils.Extractfile(file, dir); err != nil {
 		return err
 	}
 
-	if err := utils.Extractfile(dir+"/data.tar.xz", dir); err != nil {
-		return err
+	if err := utils.Extractfile(dir+"/data.tar.gz", dir); err != nil {
+		if err := utils.Extractfile(dir+"/data.tar.xz", dir); err != nil {
+			return err
+		}
 	}
 
 	for _, cache := range []string{"data.tar.xz", "control.tar.xz", "debian-binary", "control.tar.gz", "data.tar.gz"} {

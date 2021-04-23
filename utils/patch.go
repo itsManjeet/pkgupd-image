@@ -6,6 +6,9 @@ import (
 )
 
 func Patch(appdir string) error {
+	if len(appdir) == 0 {
+		log.Panic("nil value of appdir:", appdir)
+	}
 	cmd := exec.Command("find", "usr/", "-type", "f", "-exec", "sed", "-i", "-e", "s|/usr|././|g", "{}", "+")
 	cmd.Dir = appdir
 	out, err := cmd.CombinedOutput()
@@ -17,5 +20,12 @@ func Patch(appdir string) error {
 	cmd.Dir = appdir
 	out, err = cmd.CombinedOutput()
 	log.Println(string(out))
+
+	// cmd = exec.Command("bash", "-c", "cp -ra usr/* .")
+	// cmd.Dir = appdir
+	// log.Println(cmd.Run())
+
+	// os.RemoveAll(appdir + "/usr/")
+
 	return err
 }

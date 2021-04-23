@@ -1,12 +1,6 @@
 package main
 
 import (
-	"appfctry/internal/archlinux"
-	"appfctry/internal/config"
-	"appfctry/internal/debian"
-	"appfctry/internal/module"
-	"appfctry/internal/ubuntu"
-	"appfctry/internal/utils"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -14,6 +8,13 @@ import (
 	"os"
 	"path"
 	"strings"
+
+	"github.com/itsManjeet/app-fctry/config"
+	plugin "github.com/itsManjeet/app-fctry/plugins"
+	"github.com/itsManjeet/app-fctry/plugins/archlinux"
+	"github.com/itsManjeet/app-fctry/plugins/debian"
+	"github.com/itsManjeet/app-fctry/plugins/ubuntu"
+	"github.com/itsManjeet/app-fctry/utils"
 )
 
 type Factory struct {
@@ -35,7 +36,6 @@ func contains(list []string, data string) bool {
 
 func (f *Factory) Build() (err error) {
 
-	f.srcdir = f.basedir + "/src/"
 	f.pkgdir = f.basedir + "/pkg/"
 	f.syncdir = f.basedir + "/sync/"
 
@@ -43,8 +43,8 @@ func (f *Factory) Build() (err error) {
 	if err != nil {
 		return err
 	}
-
-	f.syncdir += f.config.Distro.ID + "/"
+	f.srcdir = f.basedir + "/src/" + f.config.Distro.ID + "-" + f.config.Distro.Version + "/"
+	f.syncdir += f.config.Distro.ID + "-" + f.config.Distro.Version + "/"
 
 	f.wrkdir = f.basedir + "/wrk/" + f.config.App.ID
 	f.clean()
@@ -75,7 +75,7 @@ func (f *Factory) Build() (err error) {
 
 	} else {
 
-		exec := module.Initialize(f.config, mod)
+		exec := plugin.Initialize(f.config, mod)
 
 		if _, err := os.Stat("assets/apps.list"); err == nil {
 			if data, err := ioutil.ReadFile("assets/apps.list"); err == nil {
@@ -113,13 +113,16 @@ func (f *Factory) Build() (err error) {
 		}
 	}
 
+	if f.config.Union {
+		fmt.Println("=> adding union preload")
+		if err := utils.Copyfile("assets/libunionpreload.so", f.wrkdir+"/libunionpreload.so"); err != nil {
+			return err
+		}
+	}
+
 	icofile := "assets/package.png"
 	if _, err := os.Stat(f.wrkdir + "/" + appID + ".png"); os.IsNotExist(err) {
 		utils.Copyfile(icofile, f.wrkdir+"/"+appID+".png")
-	}
-
-	if err := utils.Copyfile("assets/libunionpreload.so", f.wrkdir+"/libunionpreload.so"); err != nil {
-		return err
 	}
 
 	utils.Copyfile(f.wrkdir+"/"+appID+".png", f.pkgdir+"/.icons/"+appID+".png")
@@ -158,8 +161,8 @@ func (f *Factory) Build() (err error) {
 	return nil
 }
 
-func (f Factory) getModule(module string) (module.Module, error) {
-	switch module {
+func (f Factory) getModule(plugin string) (plugin.Plugin, error) {
+	switch plugin {
 	case "debian":
 		return &debian.Debian{}, nil
 	case "ubuntu":
@@ -167,11 +170,11 @@ func (f Factory) getModule(module string) (module.Module, error) {
 	case "archlinux":
 		return &archlinux.ArchLinux{}, nil
 	}
-	if len(module) == 0 {
+	if len(plugin) == 0 {
 		return nil, nil
 	}
 
-	return nil, errors.New("unsupported module " + module)
+	return nil, errors.New("unsupported plugin " + plugin)
 }
 
 func (f Factory) pre() error {

@@ -1,13 +1,14 @@
 package archlinux
 
 import (
-	"appfctry/internal/module"
-	"appfctry/internal/utils"
 	"fmt"
 	"os"
 	"os/exec"
 	"path"
 	"strings"
+
+	plugin "github.com/itsManjeet/app-fctry/plugins"
+	"github.com/itsManjeet/app-fctry/utils"
 )
 
 type ArchLinux struct {
@@ -26,7 +27,7 @@ func (a ArchLinux) readfile(path string) (string, error) {
 	return string(data), nil
 }
 
-func (a *ArchLinux) Prepare(p string) (map[string]module.Package, error) {
+func (a *ArchLinux) Prepare(p string) (map[string]plugin.Package, error) {
 
 	_, repo := path.Split(p)
 
@@ -35,7 +36,7 @@ func (a *ArchLinux) Prepare(p string) (map[string]module.Package, error) {
 		return nil, err
 	}
 
-	db := make(map[string]module.Package)
+	db := make(map[string]plugin.Package)
 
 	striper := func(f string) string {
 		if strings.Contains(f, ">=") {
@@ -53,7 +54,7 @@ func (a *ArchLinux) Prepare(p string) (map[string]module.Package, error) {
 	for lines[i] == "%FILENAME%" {
 		i++
 
-		var t module.Package
+		var t plugin.Package
 		t.URL = repo + "/os/x86_64/" + lines[i]
 		i++
 

@@ -1,13 +1,14 @@
 package main
 
 import (
-	"appfctry/internal/config"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
+
+	"github.com/itsManjeet/app-fctry/config"
 )
 
 func main() {

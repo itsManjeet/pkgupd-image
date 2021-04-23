@@ -3,9 +3,10 @@ app:
   version: 0.1.1
   desc: a free and open-source raster graphics editor used for image manipulation and image editing, free-form drawing, transcoding between different image file formats, and more specialized tasks.
 
+union: true
 distro:
   id: ubuntu
-  version: trusty
+  version: bionic
   mirror: http://archive.ubuntu.com/ubuntu
   repo:
     - main
