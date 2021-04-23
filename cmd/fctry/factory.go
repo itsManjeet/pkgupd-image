@@ -152,7 +152,7 @@ func (f *Factory) Build() (err error) {
 		}
 	}
 
-	if err := utils.MakeImage(f.wrkdir, f.pkgdir+"/"+appID); err != nil {
+	if err := utils.MakeImage(f.wrkdir, f.pkgdir+"/"+appID+".app"); err != nil {
 		return err
 	}
 

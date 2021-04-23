@@ -3,6 +3,7 @@ app:
   version: 2.10.18
   desc: a free and open-source raster graphics editor used for image manipulation and image editing, free-form drawing, transcoding between different image file formats, and more specialized tasks.
 
+union: true
 distro:
   id: ubuntu
   version: focal
@@ -10,6 +11,9 @@ distro:
   repo:
     - main
     - universe
+
+  includes:
+    - fonts-cantarell
 
 exec:
   script: |
