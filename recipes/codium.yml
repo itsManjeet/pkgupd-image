@@ -1,0 +1,13 @@
+app:
+  id: codium
+  version: 1.55.2
+  desc: Free/Libre Open Source Software Binaries of VS Code
+
+patch: false
+exec:
+  sources:
+    - https://github.com/VSCodium/vscodium/releases/download/1.55.2/VSCodium-linux-x64-1.55.2.tar.gz
+
+  script: |
+    ln -sf ../codium bin/codium
+    cp resources/app/resources/linux/code.png codium.png
