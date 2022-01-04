@@ -1,7 +1,0 @@
-app: app-name
-
-module: script
-URL: http://apps.rlxos.dev/1507/
-
-script:
-  - ls -al

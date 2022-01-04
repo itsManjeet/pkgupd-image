@@ -6,13 +6,10 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path"
 	"strings"
 
 	"github.com/dustin/go-humanize"
 )
-
-// https://golangcode.com/download-a-file-with-progress/
 
 type WriteCounter struct {
 	Total uint64
@@ -30,7 +27,7 @@ func (wc *WriteCounter) Write(p []byte) (int, error) {
 	return n, nil
 }
 
-func DownloadFile(filepath, url string) error {
+func Download(filepath, url string) error {
 	fmt.Println("downloading ", url, filepath)
 	if _, err := os.Stat(filepath); err == nil {
 		log.Println("Skipping, already in cache")
@@ -60,19 +57,6 @@ func DownloadFile(filepath, url string) error {
 
 	if err = os.Rename(filepath+".tmp", filepath); err != nil {
 		return err
-	}
-
-	return nil
-}
-
-func DownloadSources(urls []string, outpath string) error {
-	for _, url := range urls {
-		log.Println("Downloading source from", url)
-		filename := path.Base(url)
-		if err := DownloadFile(outpath+"/"+filename, url); err != nil {
-			log.Println("Failed to download", url, err)
-			return err
-		}
 	}
 
 	return nil
