@@ -7,8 +7,8 @@ import (
 	"os"
 	"path"
 
-	"github.com/itsManjeet/app-fctry/recipe"
-	"github.com/itsManjeet/app-fctry/utils"
+	"github.com/itsmanjeet/pkgupd-image/recipe"
+	"github.com/itsmanjeet/pkgupd-image/utils"
 )
 
 type Image struct {

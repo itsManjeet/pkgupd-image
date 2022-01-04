@@ -8,7 +8,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/itsManjeet/app-fctry/utils"
+	"github.com/itsmanjeet/pkgupd-image/utils"
 	"gopkg.in/ini.v1"
 )
 

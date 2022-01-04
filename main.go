@@ -6,9 +6,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/itsManjeet/app-fctry/apt"
-	"github.com/itsManjeet/app-fctry/patch"
-	"github.com/itsManjeet/app-fctry/union"
+	"github.com/itsmanjeet/pkgupd-image/apt"
+	"github.com/itsmanjeet/pkgupd-image/patch"
+	"github.com/itsmanjeet/pkgupd-image/union"
 )
 
 type arrayFlag []string
@@ -25,7 +25,7 @@ func (a *arrayFlag) Set(value string) error {
 func main() {
 
 	if len(os.Args) == 1 {
-		fmt.Printf("Usage: %s [generate|patch] <args>", os.Args[0])
+		fmt.Printf("Usage: %s [generate|patch|cleanup|union] <args>", os.Args[0])
 		os.Exit(1)
 	}
 

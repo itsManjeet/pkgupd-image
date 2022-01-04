@@ -8,7 +8,7 @@ import (
 	"os/exec"
 	"path"
 
-	"github.com/itsManjeet/app-fctry/utils"
+	"github.com/itsmanjeet/pkgupd-image/utils"
 )
 
 func (apt Apt) Install(rootdir string, pkg_ids ...string) error {
