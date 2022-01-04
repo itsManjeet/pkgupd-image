@@ -4,7 +4,7 @@ import "os/exec"
 
 func Install(loc string) error {
 	script := `
-gcc -fPIC -shared -x c -o ` + loc + `/libunionpreload.so - <<EOF
+gcc -fPIC -shared -ldl -x c -o ` + loc + `/libunionpreload.so - <<EOF
 #define _GNU_SOURCE
 #define __USE_GNU
 

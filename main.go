@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/itsmanjeet/pkgupd-image/apprun"
 	"github.com/itsmanjeet/pkgupd-image/apt"
 	"github.com/itsmanjeet/pkgupd-image/patch"
 	"github.com/itsmanjeet/pkgupd-image/union"
@@ -80,7 +81,13 @@ func main() {
 		}
 
 	case "union":
-		if err := union.Install("AppDir"); err != nil {
+		if err := union.Install(WorkDir); err != nil {
+			log.Println("failed to install libunionpreload", err)
+			os.Exit(1)
+		}
+
+	case "apprun":
+		if err := apprun.Install(WorkDir); err != nil {
 			log.Println("failed to install libunionpreload", err)
 			os.Exit(1)
 		}
