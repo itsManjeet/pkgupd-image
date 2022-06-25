@@ -23,24 +23,35 @@ func (a *arrayFlag) Set(value string) error {
 	return nil
 }
 
-func main() {
+var (
+	mirror       *string
+	release      *string
+	arch         *string
+	repositories arrayFlag
+)
 
-	if len(os.Args) == 1 {
-		fmt.Printf("Usage: %s [generate|patch|cleanup|union] <args>", os.Args[0])
-		os.Exit(1)
-	}
-
-	mirror := flag.String("mirror", "http://archive.ubuntu.com/ubuntu/", "Specify custom ubuntu mirror")
-	release := flag.String("release", "focal", "Specify Ubuntu release")
-	arch := flag.String("arch", "amd64", "Specify Architecure")
-	var repositories arrayFlag
-
-	repositories = append(repositories, []string{"main", "universe"}...)
+func init() {
+	mirror = flag.String("mirror", "http://archive.ubuntu.com/ubuntu/", "Specify custom ubuntu mirror")
+	release = flag.String("release", "focal", "Specify Ubuntu release")
+	arch = flag.String("arch", "amd64", "Specify Architecure")
 
 	flag.Var(&repositories, "repositories", "Specify repositories")
 	flag.Parse()
+}
 
-	WorkDir := "AppDir"
+func main() {
+
+	if len(os.Args) > 2 {
+		fmt.Printf("Usage: %s [generate|patch|cleanup|union] <args>", os.Args[0])
+		os.Exit(1)
+	}
+	if len(repositories) == 0 {
+		repositories = []string{"main", "universe"}
+	}
+
+	WorkDir := os.Args[2]
+	os.MkdirAll(WorkDir, 0755)
+
 	patcher := patch.Patch{
 		Directory: WorkDir,
 	}
@@ -61,7 +72,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		if err := apt.Install(WorkDir, os.Args[2:]...); err != nil {
+		if err := apt.Install(WorkDir, os.Args[3:]...); err != nil {
 			log.Println("error failed to build AppDir", err)
 			os.Exit(1)
 		}
