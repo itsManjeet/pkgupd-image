@@ -41,8 +41,8 @@ func init() {
 
 func main() {
 
-	if len(os.Args) > 2 {
-		fmt.Printf("Usage: %s [generate|patch|cleanup|union] <args>", os.Args[0])
+	if len(os.Args) < 2 {
+		fmt.Printf("Usage: %s [generate|patch|cleanup|union] <path> <args>", os.Args[0])
 		os.Exit(1)
 	}
 	if len(repositories) == 0 {
